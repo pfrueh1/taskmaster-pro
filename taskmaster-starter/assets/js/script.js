@@ -18,6 +18,70 @@ var createTask = function(taskText, taskDate, taskList) {
   $("#list-" + taskList).append(taskLi);
 };
 
+//make tasks draggable
+$(".card .list-group").sortable({
+  connectWith: $(".card .list-group"),
+  scroll: false,
+  tolerance: "pointer",
+  helper: "clone",
+  activate: function(event) {
+   
+  },
+  deactivate: function(event) {
+  
+  },
+  over: function(event) {
+  
+  },
+  out: function(event) {
+  
+  },
+  update: function(event) {
+    //array for task data
+    var tempArr = [];
+    //loop over current set of children in sortable list
+    $(this).children().each(function(){
+      var text = $(this)
+      .find("p")
+      .text()
+      .trim();
+      var date = $(this)
+      .find("span")
+      .text()
+      .trim();
+    
+      //add task data to the array as an object
+      tempArr.push({
+        text: text,
+        date: date
+      });      
+    });
+    //trim down lists id to mathc object property
+    var arrName = $(this)
+      .attr("id")
+      .replace("list-", "");
+
+    //update array on tasks object and save
+    tasks[arrName] = tempArr;
+    saveTasks();
+
+  }
+});
+
+//make trash card work
+$("#trash").droppable({
+  accept: ".card .list-group-item",
+  tolerance: "touch",
+  drop: function(event, ui) {
+    ui.draggable.remove();
+  },
+  over: function(event, ui) {
+    console.log("over");
+  },
+  out: function(event, ui) {
+    console.log("out");
+  }
+})
 var loadTasks = function() {
   tasks = JSON.parse(localStorage.getItem("tasks"));
 
